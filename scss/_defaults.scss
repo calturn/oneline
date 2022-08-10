@@ -1,0 +1,47 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    width: 100vw;
+    background: darkslateblue;
+    color: whitesmoke;
+    font-family: monospace;
+}
+
+h1 {
+    font-size: 3rem;
+    font-weight: 700;
+    padding-bottom: 3rem;
+}
+
+h2 {
+    padding-bottom: 1rem;
+}
+
+h3 {
+    padding-bottom: 0.75rem;
+}
+
+p {
+    max-width: 80ch;
+    padding-bottom: 2rem;
+    line-height: 160%;
+}
+
+label {
+    padding-bottom: 0.35rem;
+}
+
+input {
+    width: fit-content;
+    margin-bottom: 1rem;
+}
+
+button {
+    margin: 1rem 0 1rem 0;
+    padding: 1rem;
+    width: fit-content;
+}
