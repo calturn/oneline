@@ -1,10 +1,12 @@
 // Global variable defaults
 const gameContainer = document.getElementById("game");
+// the following variables will later be stored in a default game settings object
 let numberOfPlayers = 1;
 let playerNames = [];
 let maxTurns;
 let turnsPerPlayer = 3;
 let turnNumber;
+let story = [];
 
 
 // Page content
@@ -39,6 +41,13 @@ const mainGame = (allPlayerNames, totalTurns, turnNumber, currentPlayerTurn, cur
     `;
 }
 
+const storyReveal = (story) => {
+    return /* html */ `
+        <h2 class="info-title">The whole story</h2>
+        <p class="story-text">${story}</p>
+        <button id="startOverBtn" type="button" class="restart-button">Start over</button>
+    `;
+}
 
 // Game states
 
@@ -47,9 +56,20 @@ const renderPage = (data) => {
     gameContainer.innerHTML = data;
 }
 
+const displayStory = () => {
+    let fullStory = story.join(" ");
+    renderPage(storyReveal(fullStory));
+    document.getElementById("startOverBtn").addEventListener("click", startOver);
+}
+
+const addToStory = (text) => {
+    story.push(text);
+}
+
 const runGame = (playerNames, numberOfPlayers, turnsPerPlayer) => {
 
     // Inital game variable setup
+    story = [];
     let allPlayerNames = playerNames;
     let totalTurns = numberOfPlayers * turnsPerPlayer;
     let initialTurn = 0;
@@ -61,27 +81,30 @@ const runGame = (playerNames, numberOfPlayers, turnsPerPlayer) => {
         let submitTextBtn = document.getElementById("submitTextBtn");
         submitTextBtn.addEventListener("click", (event) => {
             event.preventDefault();
+            addToStory(document.getElementById("textArea").value);
+            console.log(`New entry added. Story so far: ${story.join(" ")}`);
             let turnIsNow = turnNumber + 1; // Increase the turn counter
             nextTurn(turnIsNow);
         });
     }
 
+    // Player turn
     function nextTurn(turnNumber) {
         if (turnNumber < totalTurns) {
-            
             currentPlayerTurn += 1;
+            // Check if all players have had their turn, and if so begin a new round
             if (currentPlayerTurn === allPlayerNames.length) {
                 currentPlayerTurn = 0;
             }
-
+            // Set the player name to the current player index
             currentPlayerName = allPlayerNames[currentPlayerTurn];
             console.log(`Current player is ${currentPlayerName}. It's turn number ${turnNumber} out of ${totalTurns}.`);
-
+            // Render html elements
             renderPage(mainGame(allPlayerNames, totalTurns, turnNumber, currentPlayerTurn, currentPlayerName));
             getSubmitBtn(turnNumber);
 
         } else {
-            alert("end of game, display the story");
+            displayStory();
         }
     }
 
