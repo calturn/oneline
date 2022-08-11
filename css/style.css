@@ -66,3 +66,11 @@ button {
 .game-settings__players {
   padding-bottom: 1rem;
 }
+
+.writing-field {
+  display: flex;
+  flex-direction: column;
+}
+.writing-field__text-area {
+  height: 10rem;
+}

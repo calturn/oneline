@@ -20,3 +20,12 @@
         padding-bottom: 1rem;
     }
 }
+
+.writing-field {
+    display: flex;
+    flex-direction: column;
+
+    &__text-area {
+        height: 10rem;
+    }
+}
