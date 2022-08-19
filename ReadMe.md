@@ -21,5 +21,4 @@ So far, the basic game lets the user specify how many players are playing, what 
 * Player names aren't destroyed when changing the player amount.
 * Revision of description info, button names, etc. UX considerations.
 * Option to restart the game over using the same game settings, instead of going back to the very start and having to reselect them.
-* Stories are savable as a txt file.
 * Eventual redesigned version with fancy UI and even cooler features...
