@@ -14,6 +14,9 @@ So far, the basic game lets the user specify how many players are playing, what 
 **v0.11**
 * Added punctuation detection to player submissions for better story readability. If a player does not end their submission with punctuation, a full stop will be automatically added.
 
+**v0.12**
+* Added the ability to save the final story as a .txt file.
+
 ### Future fixes, improvements, and features
 * Player names aren't destroyed when changing the player amount.
 * Revision of description info, button names, etc. UX considerations.
