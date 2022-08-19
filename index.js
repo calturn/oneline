@@ -46,6 +46,7 @@ const storyReveal = (story) => {
         <h2 class="info-title">The whole story</h2>
         <p class="story-text">${story}</p>
         <button id="startOverBtn" type="button" class="restart-button">Start over</button>
+        <button id="saveStoryBtn" type="button" class="save-button">Download story</button>
     `;
 }
 
@@ -56,10 +57,24 @@ const renderPage = (data) => {
     gameContainer.innerHTML = data;
 }
 
+const saveStoryToFile = (content, filename, contentType) => {
+    const a = document.createElement("a");
+    const file = new Blob([content], {type: contentType});
+
+    a.href = URL.createObjectURL(file);
+    a.download = filename;
+    a.click();
+
+    URL.revokeObjectURL(a.href);
+}
+
 const displayStory = () => {
     let fullStory = story.join(" ");
     renderPage(storyReveal(fullStory));
     document.getElementById("startOverBtn").addEventListener("click", startOver);
+    document.getElementById("saveStoryBtn").addEventListener("click", () => {
+        saveStoryToFile(fullStory, "one-line-story.txt", "text/plain")
+    });
 }
 
 const addToStory = (text) => {
@@ -144,6 +159,7 @@ const startOver = () => {
 
         // Render input fields based on number of players
         // ! BUG: Currently wipes input fields when changed. There needs to be a way to save field data if entered.
+        // Possible fix is using "append child" inputs instead
         for (let count = 0; numberOfPlayers > count; count++) {
             let playerID = count + 1; 
             playerRegister.innerHTML += `
