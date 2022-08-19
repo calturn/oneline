@@ -63,7 +63,26 @@ const displayStory = () => {
 }
 
 const addToStory = (text) => {
-    story.push(text);
+    let newEntry = [text];
+    // Check for punctuation at end of submission; add "." if absent
+    for (let i = 0; i < newEntry[0].length; i++) {
+        if (i === (newEntry[0].length - 1)) {
+            console.log(`scanning for punctuation at the end of the submission (index ${i}), which is the character "${newEntry[0][i]}".`);
+            switch (newEntry[0][i]) {
+                case "." :
+                    break;
+                case "!" :
+                    break;
+                case "?" :
+                    break;
+                default :
+                    console.log(`No punctuation detected at the end of submitted entry. Added a "." at index ${i + 1}.`);
+                    newEntry.push(".");
+                    break;
+            }
+        }
+    }
+    story.push(newEntry.join(""));
 }
 
 const runGame = (playerNames, numberOfPlayers, turnsPerPlayer) => {
