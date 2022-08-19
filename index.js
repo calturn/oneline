@@ -11,24 +11,25 @@ let story = [];
 
 // Page content
 
-const mainMenu = 
-/* html */ `
+const mainMenu = () => {
+return /* html */ `
     <h1 class="main-title">🖊 one line at a time</h1>
     <h2 class="info-title">How to play</h2>
     <p class="info-text">This is a silly group writing game where you tell a story together, one sentence at a time, without being able to see what the other players wrote before you. When everyone has finished all of their turns, the whole story is revealed in all it's nonsensical glory.</p>
     <h2 class="info-title">Setup</h2>
     <form action="" class="game-settings">
         <label for="numberOfPlayers" class="game-settings__label">How many players?</label>
-        <input type="number" value="1" min="1" max="10" class="game-settings__input" id="numberOfPlayers" name="numberOfPlayers">
+        <input type="number" value="${numberOfPlayers}" min="1" max="10" class="game-settings__input" id="numberOfPlayers" name="numberOfPlayers">
         <div class="game-settings__players" id="playerRegister">
         <label for="player1Name">Player 1 name:</label>
         <input name="player1Name" type="text" placeholder="type here..." class="player-input game-settings__input"></input>
         </div>
         <label for="numberOfTurns" class="game-settings__label">How many turns per player?</label>
-        <input type="number" value="3" min="1" max="10"; class="game-settings__input" id="numberOfTurns" name="numberOfTurns">
+        <input type="number" value="${turnsPerPlayer}" min="1" max="10"; class="game-settings__input" id="numberOfTurns" name="numberOfTurns">
         <button type="submit" class="game-settings__submit" id="startGame">Start game</button>
     </form>
 `;
+}
 
 const mainGame = (allPlayerNames, totalTurns, turnNumber, currentPlayerTurn, currentPlayerName) => {
     return /* html */ `
@@ -110,6 +111,10 @@ const runGame = (playerNames, numberOfPlayers, turnsPerPlayer) => {
     let currentPlayerTurn = -1;
     let currentPlayerName = allPlayerNames[0];
 
+    // Save settings to session storage
+    sessionStorage.setItem("numberOfPlayers", numberOfPlayers);
+    sessionStorage.setItem("turnsPerPlayer", turnsPerPlayer);
+
     // Text submit button
     function getSubmitBtn (turnNumber) {
         let submitTextBtn = document.getElementById("submitTextBtn");
@@ -146,17 +151,15 @@ const runGame = (playerNames, numberOfPlayers, turnsPerPlayer) => {
 };
 
 const startOver = () => {
-    renderPage(mainMenu);
+    renderPage(mainMenu());
     const startGameBtn = document.getElementById("startGame");
     const playerNumberInput = document.getElementById("numberOfPlayers");
     const playerTurnsInput = document.getElementById("numberOfTurns");
     const playerRegister = document.getElementById("playerRegister");
 
-    // Listen for and get changes to number of players setting
-    playerNumberInput.addEventListener("change", () => {
-        numberOfPlayers = playerNumberInput.value;
+    // Generate player name inputs based on number of players
+    function generateNameInputs(numberOfPlayers) {
         playerRegister.innerHTML = "";
-
         // Render input fields based on number of players
         // ! BUG: Currently wipes input fields when changed. There needs to be a way to save field data if entered.
         // Possible fix is using "append child" inputs instead
@@ -167,6 +170,20 @@ const startOver = () => {
             <input name="player${playerID}Name" type="text" placeholder="type here..." class="player-input game-settings__input"></input>
             `;
         }
+    }
+
+    // Fill in fields from session storage
+    if (sessionStorage.getItem("numberOfPlayers")) {
+        console.log("Grabbed existing settings from session storage.")
+        playerNumberInput.value = sessionStorage.getItem("numberOfPlayers");
+        playerTurnsInput.value = sessionStorage.getItem("turnsPerPlayer");
+        generateNameInputs(playerNumberInput.value);
+    }
+
+    // Listen for and get changes to number of players setting
+    playerNumberInput.addEventListener("change", () => {
+        numberOfPlayers = playerNumberInput.value;
+        generateNameInputs(numberOfPlayers);
     });
 
     // Listen for and get changes to player turns setting
