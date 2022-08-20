@@ -167,23 +167,27 @@ const startOver = () => {
         }
     }
 
+    function generateExistingNameInputs() {
+        for (let i = 0; i < playerNames.length; i++) {
+            let playerID = i + 1;
+            playerRegister.innerHTML += `
+            <label for="player${playerID}Name">Player ${playerID} name:</label>
+            <input name="player${playerID}Name" value="${playerNames[i]}" type="text" placeholder="type here..." class="player-input game-settings__input"></input>
+            `;
+        }
+    }
+
     // Generate player name inputs based on number of players
     function generateInitialNameInputs(numberOfPlayers) {
         playerRegister.innerHTML = "";
         if (playerNames[0] === undefined) {
             // If there's no existing player names, generate based on number of players input
-            console.log("no player names detected");
+            console.log("no existing player names detected");
             generateEmptyNameInputs(numberOfPlayers);
         } else if (playerNames) {
-            console.log("player names have been detected");
             // Otherwise, generate a list of pre-existing players
-            for (let i = 0; i < playerNames.length; i++) {
-                let playerID = i + 1;
-                playerRegister.innerHTML += `
-                <label for="player${playerID}Name">Player ${playerID} name:</label>
-                <input name="player${playerID}Name" value="${playerNames[i]}" type="text" placeholder="type here..." class="player-input game-settings__input"></input>
-                `;
-            }
+            console.log("existing player names have been detected");
+            generateExistingNameInputs(playerNames);
         } else {
             alert("Page error: cannot generate name inputs");
         }
