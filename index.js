@@ -157,12 +157,7 @@ const startOver = () => {
     const playerTurnsInput = document.getElementById("numberOfTurns");
     const playerRegister = document.getElementById("playerRegister");
 
-    // Generate player name inputs based on number of players
-    function generateNameInputs(numberOfPlayers) {
-        playerRegister.innerHTML = "";
-        // Render input fields based on number of players
-        // ! BUG: Currently wipes input fields when changed. There needs to be a way to save field data if entered.
-        // Possible fix is using "append child" inputs instead
+    function generateEmptyNameInputs(numberOfPlayers) {
         for (let count = 0; numberOfPlayers > count; count++) {
             let playerID = count + 1; 
             playerRegister.innerHTML += `
@@ -172,18 +167,51 @@ const startOver = () => {
         }
     }
 
+    // Generate player name inputs based on number of players
+    function generateInitialNameInputs(numberOfPlayers) {
+        playerRegister.innerHTML = "";
+        if (playerNames[0] === undefined) {
+            // If there's no existing player names, generate based on number of players input
+            console.log("no player names detected");
+            generateEmptyNameInputs(numberOfPlayers);
+        } else if (playerNames) {
+            console.log("player names have been detected");
+            // Otherwise, generate a list of pre-existing players
+            for (let i = 0; i < playerNames.length; i++) {
+                let playerID = i + 1;
+                playerRegister.innerHTML += `
+                <label for="player${playerID}Name">Player ${playerID} name:</label>
+                <input name="player${playerID}Name" value="${playerNames[i]}" type="text" placeholder="type here..." class="player-input game-settings__input"></input>
+                `;
+            }
+        } else {
+            alert("Page error: cannot generate name inputs");
+        }
+        // Render input fields based on number of players
+        // ! BUG: Currently wipes input fields when changed. There needs to be a way to save field data if entered.
+        // Possible fix is using "append child" inputs instead
+    }
+
     // Fill in fields from session storage
     if (sessionStorage.getItem("numberOfPlayers")) {
         console.log("Grabbed existing settings from session storage.")
-        playerNumberInput.value = sessionStorage.getItem("numberOfPlayers");
+
+        playerNumberInput.value = sessionStorage.getItem("numberOfPlayers"); // Input value
+        numberOfPlayers = playerNumberInput.value; // Global variable
+
         playerTurnsInput.value = sessionStorage.getItem("turnsPerPlayer");
-        generateNameInputs(playerNumberInput.value);
+        turnsPerPlayer = playerTurnsInput.value;
+
+        // playerNames = JSON.parse([sessionStorage.playerNames]);
+        console.log(`players saved: ${playerNames}. Turns per player saved: ${turnsPerPlayer}`);
+        generateInitialNameInputs(numberOfPlayers);
     }
 
     // Listen for and get changes to number of players setting
     playerNumberInput.addEventListener("change", () => {
         numberOfPlayers = playerNumberInput.value;
-        generateNameInputs(numberOfPlayers);
+        playerRegister.innerHTML = "";
+        generateEmptyNameInputs(numberOfPlayers);
     });
 
     // Listen for and get changes to player turns setting
@@ -193,7 +221,7 @@ const startOver = () => {
 
     const checkSettingsValidity = (event) => {
         event.preventDefault();
-        console.log(numberOfPlayers, turnsPerPlayer);
+        playerNames = []; // Reset player name list
 
         // Get player names entered from the DOM
         let playerNamesList = document.querySelectorAll(".player-input");
