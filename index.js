@@ -211,11 +211,60 @@ const startOver = () => {
         generateInitialNameInputs(numberOfPlayers);
     }
 
+    function addPlayers(playerNamesList) {
+        for (let i = 0; i < playerNamesList.length; i++) {
+            if (playerNamesList[i].value !== "") {
+                playerNames.push(playerNamesList[i].value); // Add all existing input values if not empty
+            } else {
+                return false;
+            }
+        }
+        console.log("Saved the following players:")
+        console.log(playerNames);
+    }
+
+    function checkPlayerNameValidity() {
+        for (let i = 0; i < playerNames; i++){
+
+
+            /*
+            Need to work out how to check that player names inputs are not left empty.
+            Also need to work out how to generate new player numbers accurately if generating existing ones first.
+            Also need to delete players from list when player count is reduced
+            */
+            console.log(i);
+            if (playerNames[i] === ""){
+                return false;
+            } else {
+                return true;
+            }
+
+        }
+    }
+
+    function getPlayerInputs() {
+        let playerNamesList = document.querySelectorAll(".player-input");
+        playerRegister.innerHTML = ""; // Clear the inputs
+        playerNames = []; // Reset player name list
+        addPlayers(playerNamesList);
+    }
+
     // Listen for and get changes to number of players setting
     playerNumberInput.addEventListener("change", () => {
-        numberOfPlayers = playerNumberInput.value;
-        playerRegister.innerHTML = "";
-        generateEmptyNameInputs(numberOfPlayers);
+        numberOfPlayers = playerNumberInput.value; // Get how many players there are
+        getPlayerInputs(); // Updates global players array to current inputs
+        let existingNames = playerNames.length;
+        let emptyInputs = numberOfPlayers - existingNames;
+        // Generate empty inputs if number of players setting is higher than existing players
+        console.log(`Empty inputs: ${emptyInputs}`)
+        if (emptyInputs > 0) {
+            generateExistingNameInputs(existingNames);
+            generateEmptyNameInputs(emptyInputs);
+        } else if (emptyInputs <= 0) {
+            playerNames.pop();
+            generateExistingNameInputs(existingNames);
+            generateEmptyNameInputs(emptyInputs);
+        }
     });
 
     // Listen for and get changes to player turns setting
@@ -225,18 +274,15 @@ const startOver = () => {
 
     const checkSettingsValidity = (event) => {
         event.preventDefault();
-        playerNames = []; // Reset player name list
 
-        // Get player names entered from the DOM
-        let playerNamesList = document.querySelectorAll(".player-input");
-        console.log(playerNamesList);
-        for (let index = 0; index < playerNamesList.length; index++) {
-            playerNames.push(playerNamesList[index].value);
-        }
-        console.log(playerNames);
+        getPlayerInputs(); // Get player names entered from the DOM
+        let validPlayerNames = checkPlayerNameValidity();
 
         // Check for valid game settings before running game
-        if (!numberOfPlayers || !turnsPerPlayer) {
+        if (!validPlayerNames) {
+            alert("No name provided for players");
+            generateInitialNameInputs(numberOfPlayers);
+        } else if (!numberOfPlayers || !turnsPerPlayer) {
             alert("please enter valid game settings")
         } else {
             console.log(`starting game with ${numberOfPlayers} players. Each player will have ${turnsPerPlayer} turns.`);
