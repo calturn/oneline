@@ -2,7 +2,11 @@
 const gameContainer = document.getElementById("game");
 // the following variables will later be stored in a default game settings object
 let numberOfPlayers = 1;
+
 let playerNames = [];
+let maxPlayers = 8;
+playerNames.length = maxPlayers;
+
 let maxTurns;
 let turnsPerPlayer = 3;
 let turnNumber;
@@ -21,8 +25,6 @@ return /* html */ `
         <label for="numberOfPlayers" class="game-settings__label">How many players?</label>
         <input type="number" value="${numberOfPlayers}" min="1" max="10" class="game-settings__input" id="numberOfPlayers" name="numberOfPlayers">
         <div class="game-settings__players" id="playerRegister">
-        <label for="player1Name">Player 1 name:</label>
-        <input name="player1Name" type="text" placeholder="type here..." class="player-input game-settings__input"></input>
         </div>
         <label for="numberOfTurns" class="game-settings__label">How many turns per player?</label>
         <input type="number" value="${turnsPerPlayer}" min="1" max="10"; class="game-settings__input" id="numberOfTurns" name="numberOfTurns">
@@ -157,23 +159,26 @@ const startOver = () => {
     const playerTurnsInput = document.getElementById("numberOfTurns");
     const playerRegister = document.getElementById("playerRegister");
 
-    function generateEmptyNameInputs(numberOfPlayers) {
-        for (let count = 0; numberOfPlayers > count; count++) {
-            let playerID = count + 1; 
-            playerRegister.innerHTML += `
-            <label for="player${playerID}Name">Player ${playerID} name:</label>
-            <input name="player${playerID}Name" type="text" placeholder="type here..." class="player-input game-settings__input"></input>
-            `;
-        }
-    }
+    generateNameInputs(playerNumberInput.value);
 
-    function generateExistingNameInputs() {
-        for (let i = 0; i < playerNames.length; i++) {
+    function generateNameInputs(currentNumberOfPlayers) {
+        playerRegister.innerHTML = "";
+
+        for (let i = 0; i < currentNumberOfPlayers; i++) {
+            // remove all input buttons
             let playerID = i + 1;
+            curPlayerName = playerNames[i] !== undefined ? playerNames[i] : "";
             playerRegister.innerHTML += `
             <label for="player${playerID}Name">Player ${playerID} name:</label>
-            <input name="player${playerID}Name" value="${playerNames[i]}" type="text" placeholder="type here..." class="player-input game-settings__input"></input>
+            <input name="player${playerID}Name" value="${curPlayerName}" type="text" placeholder="type here..." class="player-input game-settings__input", id="${i}"></input>
             `;
+
+            inputButton = document.getElementById(i);
+            console.log(inputButton);
+            inputButton.addEventListener("input", () => {
+                console.log(i);
+                playerNames[i] = inputButton.value;
+            })
         }
     }
 
@@ -187,7 +192,7 @@ const startOver = () => {
         } else if (playerNames) {
             // Otherwise, generate a list of pre-existing players
             console.log("existing player names have been detected");
-            generateExistingNameInputs(playerNames);
+            generateNameInputs(playerNames);
         } else {
             alert("Page error: cannot generate name inputs");
         }
@@ -225,8 +230,6 @@ const startOver = () => {
 
     function checkPlayerNameValidity() {
         for (let i = 0; i < playerNames; i++){
-
-
             /*
             Need to work out how to check that player names inputs are not left empty.
             Also need to work out how to generate new player numbers accurately if generating existing ones first.
@@ -235,11 +238,10 @@ const startOver = () => {
             console.log(i);
             if (playerNames[i] === ""){
                 return false;
-            } else {
-                return true;
             }
-
         }
+
+        return true;
     }
 
     function getPlayerInputs() {
@@ -252,19 +254,9 @@ const startOver = () => {
     // Listen for and get changes to number of players setting
     playerNumberInput.addEventListener("change", () => {
         numberOfPlayers = playerNumberInput.value; // Get how many players there are
-        getPlayerInputs(); // Updates global players array to current inputs
-        let existingNames = playerNames.length;
-        let emptyInputs = numberOfPlayers - existingNames;
+
         // Generate empty inputs if number of players setting is higher than existing players
-        console.log(`Empty inputs: ${emptyInputs}`)
-        if (emptyInputs > 0) {
-            generateExistingNameInputs(existingNames);
-            generateEmptyNameInputs(emptyInputs);
-        } else if (emptyInputs <= 0) {
-            playerNames.pop();
-            generateExistingNameInputs(existingNames);
-            generateEmptyNameInputs(emptyInputs);
-        }
+        generateNameInputs(numberOfPlayers);
     });
 
     // Listen for and get changes to player turns setting
