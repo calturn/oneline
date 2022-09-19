@@ -17,8 +17,10 @@ So far, the basic game lets the user specify how many players are playing, what 
 **v0.12**
 * Added the ability to save the final story as a .txt file.
 
+**v0.13**
+* Fixed bugs that caused player name inputs to act strangely. Thanks @mceachsamu!
+
 ### Future fixes, improvements, and features
-* Player names aren't destroyed when changing the player amount.
 * Revision of description info, button names, etc. UX considerations.
 * Option to restart the game over using the same game settings, instead of going back to the very start and having to reselect them.
 * Eventual redesigned version with fancy UI and even cooler features...
